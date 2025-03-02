@@ -1,10 +1,11 @@
 package client;
 
-import client.gui.AlumnoGUI;
+
+import com.example.JFrame.BibliotecaJFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
-public class AlumnoClientApplication {
+public class BibliotecaClientApplication {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             try {
@@ -15,10 +16,10 @@ public class AlumnoClientApplication {
             }
             
             // Crear y mostrar la ventana de la aplicación
-            AlumnoGUI gui = new AlumnoGUI();
+            BibliotecaJFrame gui = new BibliotecaJFrame();
             gui.setVisible(true);
             
-            System.out.println("Aplicación de gestión de alumnos iniciada");
+            System.out.println("Sistema de Gestión de Biblioteca iniciado");
         });
     }
 }
