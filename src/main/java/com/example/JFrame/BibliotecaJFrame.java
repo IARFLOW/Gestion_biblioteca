@@ -14,48 +14,49 @@ import org.json.*;
  * @author ignacioampurdanes
  */
 public class BibliotecaJFrame extends javax.swing.JFrame {
+
     // URL base para las APIs
     private static final String BASE_URL_LIBROS = "http://localhost:8080/libros";
     private static final String BASE_URL_PRESTAMOS = "http://localhost:8080/prestamos";
-    
+
     // Variables declaration - do not modify                     
     private JTabbedPane tabbedPane;
     private JPanel librosPanel, prestamosPanel;
-    
+
     // Componentes para la pestaña de libros
     private JTable librosTable;
     private DefaultTableModel librosTableModel;
     private JTextField idLibroField, tituloField, autorField, isbnField, anioField, generoField, copiasField;
-    private JButton refreshLibrosButton, buscarLibroButton, agregarLibroButton, 
-                  actualizarLibroButton, eliminarLibroButton, limpiarLibroButton;
+    private JButton refreshLibrosButton, buscarLibroButton, agregarLibroButton,
+            actualizarLibroButton, eliminarLibroButton, limpiarLibroButton;
     private JComboBox<String> busquedaComboBox;
     private JTextField busquedaField;
-    
+
     // Componentes para la pestaña de préstamos
     private JTable prestamosTable;
     private DefaultTableModel prestamosTableModel;
     private JTextField idPrestamoField, libroPrestamoField, usuarioField;
-    private JButton verPrestamosButton, verActivosButton, verAtrasadosButton, 
-                  prestarButton, devolverButton, buscarPrestamosUsuarioButton;
+    private JButton verPrestamosButton, verActivosButton, verAtrasadosButton,
+            prestarButton, devolverButton, buscarPrestamosUsuarioButton;
     private JPanel mainPanel;
     // End of variables declaration                   
-    
+
     /**
      * Creates new form BibliotecaJFrame
      */
     public BibliotecaJFrame() {
         initComponents();
-        
+
         // Configuración adicional después de initComponents()
         setupCustomComponents();
         setupCustomLayout();
         setupListeners();
-        
+
         // Configuración adicional de la ventana
         setTitle("Sistema de Gestión de Biblioteca");
         setSize(1024, 768);
         setLocationRelativeTo(null);
-        
+
         // Cargar datos iniciales
         cargarLibros();
         cargarPrestamos();
@@ -87,18 +88,18 @@ public class BibliotecaJFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     /**
- 
-    /**
+     *
+     * /**
      * Inicializa los componentes personalizados de la aplicación
      */
     private void setupCustomComponents() {
         // Crear el panel con pestañas
         tabbedPane = new JTabbedPane();
-        
+
         // Inicializar paneles para cada pestaña
         librosPanel = new JPanel(new BorderLayout(10, 10));
         prestamosPanel = new JPanel(new BorderLayout(10, 10));
-        
+
         // Configurar tabla de libros
         String[] librosColumns = {"ID", "Título", "Autor", "ISBN", "Año", "Género", "Copias"};
         librosTableModel = new DefaultTableModel(librosColumns, 0) {
@@ -109,7 +110,7 @@ public class BibliotecaJFrame extends javax.swing.JFrame {
         };
         librosTable = new JTable(librosTableModel);
         librosTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        
+
         // Campos para gestión de libros
         idLibroField = new JTextField(5);
         idLibroField.setEditable(false);
@@ -119,7 +120,7 @@ public class BibliotecaJFrame extends javax.swing.JFrame {
         anioField = new JTextField(5);
         generoField = new JTextField(15);
         copiasField = new JTextField(3);
-        
+
         // Botones para gestión de libros
         refreshLibrosButton = new JButton("Refrescar");
         buscarLibroButton = new JButton("Buscar");
@@ -127,11 +128,11 @@ public class BibliotecaJFrame extends javax.swing.JFrame {
         actualizarLibroButton = new JButton("Actualizar");
         eliminarLibroButton = new JButton("Eliminar");
         limpiarLibroButton = new JButton("Limpiar");
-        
+
         // ComboBox para tipos de búsqueda
         busquedaComboBox = new JComboBox<>(new String[]{"Título", "Autor", "Género", "Disponibles"});
         busquedaField = new JTextField(20);
-        
+
         // Configurar tabla de préstamos
         String[] prestamosColumns = {"ID", "Libro", "Usuario", "Fecha Préstamo", "Fecha Devolución", "Devuelto"};
         prestamosTableModel = new DefaultTableModel(prestamosColumns, 0) {
@@ -142,13 +143,13 @@ public class BibliotecaJFrame extends javax.swing.JFrame {
         };
         prestamosTable = new JTable(prestamosTableModel);
         prestamosTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        
+
         // Campos para gestión de préstamos
         idPrestamoField = new JTextField(5);
         idPrestamoField.setEditable(false);
         libroPrestamoField = new JTextField(5);
         usuarioField = new JTextField(20);
-        
+
         // Botones para gestión de préstamos
         verPrestamosButton = new JButton("Ver Todos");
         verActivosButton = new JButton("Ver Activos");
@@ -157,80 +158,87 @@ public class BibliotecaJFrame extends javax.swing.JFrame {
         devolverButton = new JButton("Devolver Libro");
         buscarPrestamosUsuarioButton = new JButton("Buscar por Usuario");
     }
-    
+
     /**
      * Configura el layout de los componentes
      */
     private void setupCustomLayout() {
         // Limpiar el layout creado por el generador
         getContentPane().removeAll();
-        
+
         // Panel principal con un margen
         mainPanel = new JPanel(new BorderLayout(10, 10));
         mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        
+
         // Configurar panel de libros
         JPanel librosFormPanel = new JPanel(new GridBagLayout());
         librosFormPanel.setBorder(BorderFactory.createTitledBorder("Detalles del Libro"));
-        
+
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5);
         gbc.anchor = GridBagConstraints.WEST;
-        
+
         // Campos de entrada para libros
-        gbc.gridx = 0; gbc.gridy = 0;
+        gbc.gridx = 0;
+        gbc.gridy = 0;
         librosFormPanel.add(new JLabel("ID:"), gbc);
         gbc.gridx = 1;
         librosFormPanel.add(idLibroField, gbc);
-        
-        gbc.gridx = 0; gbc.gridy = 1;
+
+        gbc.gridx = 0;
+        gbc.gridy = 1;
         librosFormPanel.add(new JLabel("Título:"), gbc);
         gbc.gridx = 1;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         librosFormPanel.add(tituloField, gbc);
-        
-        gbc.gridx = 0; gbc.gridy = 2;
+
+        gbc.gridx = 0;
+        gbc.gridy = 2;
         gbc.fill = GridBagConstraints.NONE;
         librosFormPanel.add(new JLabel("Autor:"), gbc);
         gbc.gridx = 1;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         librosFormPanel.add(autorField, gbc);
-        
-        gbc.gridx = 0; gbc.gridy = 3;
+
+        gbc.gridx = 0;
+        gbc.gridy = 3;
         gbc.fill = GridBagConstraints.NONE;
         librosFormPanel.add(new JLabel("ISBN:"), gbc);
         gbc.gridx = 1;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         librosFormPanel.add(isbnField, gbc);
-        
-        gbc.gridx = 0; gbc.gridy = 4;
+
+        gbc.gridx = 0;
+        gbc.gridy = 4;
         gbc.fill = GridBagConstraints.NONE;
         librosFormPanel.add(new JLabel("Año:"), gbc);
         gbc.gridx = 1;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         librosFormPanel.add(anioField, gbc);
-        
-        gbc.gridx = 0; gbc.gridy = 5;
+
+        gbc.gridx = 0;
+        gbc.gridy = 5;
         gbc.fill = GridBagConstraints.NONE;
         librosFormPanel.add(new JLabel("Género:"), gbc);
         gbc.gridx = 1;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         librosFormPanel.add(generoField, gbc);
-        
-        gbc.gridx = 0; gbc.gridy = 6;
+
+        gbc.gridx = 0;
+        gbc.gridy = 6;
         gbc.fill = GridBagConstraints.NONE;
         librosFormPanel.add(new JLabel("Copias:"), gbc);
         gbc.gridx = 1;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         librosFormPanel.add(copiasField, gbc);
-        
+
         // Panel para búsqueda de libros
         JPanel librosBusquedaPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         librosBusquedaPanel.add(new JLabel("Buscar por:"));
         librosBusquedaPanel.add(busquedaComboBox);
         librosBusquedaPanel.add(busquedaField);
         librosBusquedaPanel.add(buscarLibroButton);
-        
+
         // Panel para botones de libros
         JPanel librosButtonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         librosButtonPanel.add(refreshLibrosButton);
@@ -238,44 +246,47 @@ public class BibliotecaJFrame extends javax.swing.JFrame {
         librosButtonPanel.add(actualizarLibroButton);
         librosButtonPanel.add(eliminarLibroButton);
         librosButtonPanel.add(limpiarLibroButton);
-        
+
         // Panel norte para libros (combinando formulario y búsqueda)
         JPanel librosNortePanel = new JPanel(new BorderLayout());
         librosNortePanel.add(librosFormPanel, BorderLayout.CENTER);
         librosNortePanel.add(librosBusquedaPanel, BorderLayout.SOUTH);
-        
+
         // Completar panel de libros
         librosPanel.add(librosNortePanel, BorderLayout.NORTH);
         librosPanel.add(new JScrollPane(librosTable), BorderLayout.CENTER);
         librosPanel.add(librosButtonPanel, BorderLayout.SOUTH);
-        
+
         // Configurar panel de préstamos
         JPanel prestamosFormPanel = new JPanel(new GridBagLayout());
         prestamosFormPanel.setBorder(BorderFactory.createTitledBorder("Detalles del Préstamo"));
-        
+
         gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5);
         gbc.anchor = GridBagConstraints.WEST;
-        
+
         // Campos de entrada para préstamos
-        gbc.gridx = 0; gbc.gridy = 0;
+        gbc.gridx = 0;
+        gbc.gridy = 0;
         prestamosFormPanel.add(new JLabel("ID Préstamo:"), gbc);
         gbc.gridx = 1;
         prestamosFormPanel.add(idPrestamoField, gbc);
-        
-        gbc.gridx = 0; gbc.gridy = 1;
+
+        gbc.gridx = 0;
+        gbc.gridy = 1;
         prestamosFormPanel.add(new JLabel("ID Libro:"), gbc);
         gbc.gridx = 1;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         prestamosFormPanel.add(libroPrestamoField, gbc);
-        
-        gbc.gridx = 0; gbc.gridy = 2;
+
+        gbc.gridx = 0;
+        gbc.gridy = 2;
         gbc.fill = GridBagConstraints.NONE;
         prestamosFormPanel.add(new JLabel("Usuario:"), gbc);
         gbc.gridx = 1;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         prestamosFormPanel.add(usuarioField, gbc);
-        
+
         // Panel para botones de préstamos
         JPanel prestamosButtonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         prestamosButtonPanel.add(verPrestamosButton);
@@ -284,23 +295,23 @@ public class BibliotecaJFrame extends javax.swing.JFrame {
         prestamosButtonPanel.add(buscarPrestamosUsuarioButton);
         prestamosButtonPanel.add(prestarButton);
         prestamosButtonPanel.add(devolverButton);
-        
+
         // Completar panel de préstamos
         prestamosPanel.add(prestamosFormPanel, BorderLayout.NORTH);
         prestamosPanel.add(new JScrollPane(prestamosTable), BorderLayout.CENTER);
         prestamosPanel.add(prestamosButtonPanel, BorderLayout.SOUTH);
-        
+
         // Añadir pestañas al panel
         tabbedPane.addTab("Libros", librosPanel);
         tabbedPane.addTab("Préstamos", prestamosPanel);
-        
+
         // Añadir todo al panel principal
         mainPanel.add(tabbedPane, BorderLayout.CENTER);
-        
+
         // Agregar el panel principal al JFrame
         setContentPane(mainPanel);
     }
-    
+
     /**
      * Configura los listeners para los eventos
      */
@@ -309,7 +320,7 @@ public class BibliotecaJFrame extends javax.swing.JFrame {
         librosTable.getSelectionModel().addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting() && librosTable.getSelectedRow() != -1) {
                 int row = librosTable.getSelectedRow();
-                
+
                 idLibroField.setText(librosTable.getValueAt(row, 0).toString());
                 tituloField.setText(librosTable.getValueAt(row, 1).toString());
                 autorField.setText(librosTable.getValueAt(row, 2).toString());
@@ -319,21 +330,21 @@ public class BibliotecaJFrame extends javax.swing.JFrame {
                 copiasField.setText(librosTable.getValueAt(row, 6).toString());
             }
         });
-        
+
         prestamosTable.getSelectionModel().addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting() && prestamosTable.getSelectedRow() != -1) {
                 int row = prestamosTable.getSelectedRow();
                 idPrestamoField.setText(prestamosTable.getValueAt(row, 0).toString());
             }
         });
-        
+
         // Listeners para botones de libros
         refreshLibrosButton.addActionListener(e -> cargarLibros());
-        
+
         buscarLibroButton.addActionListener(e -> {
             String tipoBusqueda = (String) busquedaComboBox.getSelectedItem();
             String valorBusqueda = busquedaField.getText().trim();
-            
+
             try {
                 switch (tipoBusqueda) {
                     case "Título":
@@ -353,7 +364,7 @@ public class BibliotecaJFrame extends javax.swing.JFrame {
                 mostrarError("Error en la búsqueda: " + ex.getMessage());
             }
         });
-        
+
         agregarLibroButton.addActionListener(e -> {
             if (validarFormLibro(false)) {
                 try {
@@ -365,7 +376,7 @@ public class BibliotecaJFrame extends javax.swing.JFrame {
                 }
             }
         });
-        
+
         actualizarLibroButton.addActionListener(e -> {
             if (validarFormLibro(true)) {
                 try {
@@ -377,20 +388,20 @@ public class BibliotecaJFrame extends javax.swing.JFrame {
                 }
             }
         });
-        
+
         eliminarLibroButton.addActionListener(e -> {
             if (idLibroField.getText().isEmpty()) {
                 mostrarError("Seleccione un libro para eliminar");
                 return;
             }
-            
+
             int opcion = JOptionPane.showConfirmDialog(
-                this,
-                "¿Está seguro de que desea eliminar este libro?",
-                "Confirmar eliminación",
-                JOptionPane.YES_NO_OPTION
+                    this,
+                    "¿Está seguro de que desea eliminar este libro?",
+                    "Confirmar eliminación",
+                    JOptionPane.YES_NO_OPTION
             );
-            
+
             if (opcion == JOptionPane.YES_OPTION) {
                 try {
                     eliminarLibro();
@@ -401,12 +412,12 @@ public class BibliotecaJFrame extends javax.swing.JFrame {
                 }
             }
         });
-        
+
         limpiarLibroButton.addActionListener(e -> limpiarFormLibro());
-        
+
         // Listeners para botones de préstamos
         verPrestamosButton.addActionListener(e -> cargarPrestamos());
-        
+
         verActivosButton.addActionListener(e -> {
             try {
                 cargarPrestamosActivos();
@@ -414,7 +425,7 @@ public class BibliotecaJFrame extends javax.swing.JFrame {
                 mostrarError("Error al cargar préstamos activos: " + ex.getMessage());
             }
         });
-        
+
         verAtrasadosButton.addActionListener(e -> {
             try {
                 cargarPrestamosAtrasados();
@@ -422,27 +433,27 @@ public class BibliotecaJFrame extends javax.swing.JFrame {
                 mostrarError("Error al cargar préstamos atrasados: " + ex.getMessage());
             }
         });
-        
+
         buscarPrestamosUsuarioButton.addActionListener(e -> {
             String usuario = usuarioField.getText().trim();
             if (usuario.isEmpty()) {
                 mostrarError("Ingrese un nombre de usuario para buscar");
                 return;
             }
-            
+
             try {
                 cargarPrestamosPorUsuario(usuario);
             } catch (Exception ex) {
                 mostrarError("Error al buscar préstamos del usuario: " + ex.getMessage());
             }
         });
-        
+
         prestarButton.addActionListener(e -> {
             if (libroPrestamoField.getText().isEmpty() || usuarioField.getText().isEmpty()) {
                 mostrarError("Ingrese ID del libro y nombre de usuario");
                 return;
             }
-            
+
             try {
                 prestarLibro();
                 limpiarFormPrestamo();
@@ -452,13 +463,13 @@ public class BibliotecaJFrame extends javax.swing.JFrame {
                 mostrarError("Error al prestar libro: " + ex.getMessage());
             }
         });
-        
+
         devolverButton.addActionListener(e -> {
             if (idPrestamoField.getText().isEmpty()) {
                 mostrarError("Seleccione un préstamo para devolver");
                 return;
             }
-            
+
             try {
                 devolverLibro();
                 limpiarFormPrestamo();
@@ -469,7 +480,7 @@ public class BibliotecaJFrame extends javax.swing.JFrame {
             }
         });
     }
-    
+
     /**
      * Carga todos los libros desde el servidor
      */
@@ -477,7 +488,7 @@ public class BibliotecaJFrame extends javax.swing.JFrame {
         try {
             String response = sendRequest(BASE_URL_LIBROS, "GET", null);
             librosTableModel.setRowCount(0);
-            
+
             JSONArray jsonArray = new JSONArray(response);
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject libro = jsonArray.getJSONObject(i);
@@ -496,7 +507,7 @@ public class BibliotecaJFrame extends javax.swing.JFrame {
             mostrarError("Error al cargar libros: " + e.getMessage());
         }
     }
-    
+
     /**
      * Busca libros por título
      */
@@ -504,7 +515,7 @@ public class BibliotecaJFrame extends javax.swing.JFrame {
         String url = BASE_URL_LIBROS + "/buscar/titulo/" + URLEncoder.encode(titulo, "UTF-8");
         actualizarTablaLibros(url);
     }
-    
+
     /**
      * Busca libros por autor
      */
@@ -512,7 +523,7 @@ public class BibliotecaJFrame extends javax.swing.JFrame {
         String url = BASE_URL_LIBROS + "/buscar/autor/" + URLEncoder.encode(autor, "UTF-8");
         actualizarTablaLibros(url);
     }
-    
+
     /**
      * Busca libros por género
      */
@@ -520,7 +531,7 @@ public class BibliotecaJFrame extends javax.swing.JFrame {
         String url = BASE_URL_LIBROS + "/buscar/genero/" + URLEncoder.encode(genero, "UTF-8");
         actualizarTablaLibros(url);
     }
-    
+
     /**
      * Muestra sólo los libros disponibles
      */
@@ -528,14 +539,14 @@ public class BibliotecaJFrame extends javax.swing.JFrame {
         String url = BASE_URL_LIBROS + "/disponibles";
         actualizarTablaLibros(url);
     }
-    
+
     /**
      * Actualiza la tabla de libros con los resultados de la URL
      */
     private void actualizarTablaLibros(String url) throws Exception {
         String response = sendRequest(url, "GET", null);
         librosTableModel.setRowCount(0);
-        
+
         JSONArray jsonArray = new JSONArray(response);
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject libro = jsonArray.getJSONObject(i);
@@ -551,7 +562,7 @@ public class BibliotecaJFrame extends javax.swing.JFrame {
             librosTableModel.addRow(row);
         }
     }
-    
+
     /**
      * Agrega un nuevo libro
      */
@@ -563,17 +574,17 @@ public class BibliotecaJFrame extends javax.swing.JFrame {
         libro.put("anioPublicacion", Integer.parseInt(anioField.getText().trim()));
         libro.put("genero", generoField.getText().trim());
         libro.put("copiasDisponibles", Integer.parseInt(copiasField.getText().trim()));
-        
+
         sendRequest(BASE_URL_LIBROS, "POST", libro.toString());
         JOptionPane.showMessageDialog(this, "Libro agregado correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
     }
-    
+
     /**
      * Actualiza un libro existente
      */
     private void actualizarLibro() throws Exception {
         int id = Integer.parseInt(idLibroField.getText().trim());
-        
+
         JSONObject libro = new JSONObject();
         libro.put("titulo", tituloField.getText().trim());
         libro.put("autor", autorField.getText().trim());
@@ -581,11 +592,11 @@ public class BibliotecaJFrame extends javax.swing.JFrame {
         libro.put("anioPublicacion", Integer.parseInt(anioField.getText().trim()));
         libro.put("genero", generoField.getText().trim());
         libro.put("copiasDisponibles", Integer.parseInt(copiasField.getText().trim()));
-        
+
         sendRequest(BASE_URL_LIBROS + "/" + id, "PUT", libro.toString());
         JOptionPane.showMessageDialog(this, "Libro actualizado correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
     }
-    
+
     /**
      * Elimina un libro
      */
@@ -594,7 +605,7 @@ public class BibliotecaJFrame extends javax.swing.JFrame {
         sendRequest(BASE_URL_LIBROS + "/" + id, "DELETE", null);
         JOptionPane.showMessageDialog(this, "Libro eliminado correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
     }
-    
+
     /**
      * Valida el formulario de libro
      */
@@ -603,17 +614,17 @@ public class BibliotecaJFrame extends javax.swing.JFrame {
             mostrarError("Seleccione un libro para actualizar");
             return false;
         }
-        
+
         if (tituloField.getText().trim().isEmpty()) {
             mostrarError("El título no puede estar vacío");
             return false;
         }
-        
+
         if (autorField.getText().trim().isEmpty()) {
             mostrarError("El autor no puede estar vacío");
             return false;
         }
-        
+
         try {
             if (!anioField.getText().trim().isEmpty()) {
                 int anio = Integer.parseInt(anioField.getText().trim());
@@ -626,7 +637,7 @@ public class BibliotecaJFrame extends javax.swing.JFrame {
             mostrarError("El año debe ser un número");
             return false;
         }
-        
+
         try {
             int copias = Integer.parseInt(copiasField.getText().trim());
             if (copias < 0) {
@@ -637,10 +648,10 @@ public class BibliotecaJFrame extends javax.swing.JFrame {
             mostrarError("Las copias disponibles deben ser un número");
             return false;
         }
-        
+
         return true;
     }
-    
+
     /**
      * Limpia el formulario de libro
      */
@@ -654,19 +665,21 @@ public class BibliotecaJFrame extends javax.swing.JFrame {
         copiasField.setText("");
         librosTable.clearSelection();
     }
-    
+
     /**
      * Carga todos los préstamos
      */
     private void cargarPrestamos() {
         try {
-            String response = sendRequest(BASE_URL_PRESTAMOS, "GET", null);
+            // Agrega un parámetro de tiempo para evitar caché
+            String url = BASE_URL_PRESTAMOS + "?timestamp=" + System.currentTimeMillis();
+            String response = sendRequest(url, "GET", null);
             actualizarTablaPrestamos(response);
         } catch (Exception e) {
             mostrarError("Error al cargar préstamos: " + e.getMessage());
         }
     }
-    
+
     /**
      * Carga sólo los préstamos activos
      */
@@ -674,7 +687,7 @@ public class BibliotecaJFrame extends javax.swing.JFrame {
         String response = sendRequest(BASE_URL_PRESTAMOS + "/activos", "GET", null);
         actualizarTablaPrestamos(response);
     }
-    
+
     /**
      * Carga préstamos atrasados
      */
@@ -682,7 +695,7 @@ public class BibliotecaJFrame extends javax.swing.JFrame {
         String response = sendRequest(BASE_URL_PRESTAMOS + "/atrasados", "GET", null);
         actualizarTablaPrestamos(response);
     }
-    
+
     /**
      * Carga préstamos por usuario
      */
@@ -691,54 +704,82 @@ public class BibliotecaJFrame extends javax.swing.JFrame {
         String response = sendRequest(url, "GET", null);
         actualizarTablaPrestamos(response);
     }
-    
+
     /**
      * Actualiza la tabla de préstamos
      */
     private void actualizarTablaPrestamos(String jsonResponse) {
         prestamosTableModel.setRowCount(0);
-        
-        JSONArray jsonArray = new JSONArray(jsonResponse);
-        for (int i = 0; i < jsonArray.length(); i++) {
-            JSONObject prestamo = jsonArray.getJSONObject(i);
-            JSONObject libro = prestamo.getJSONObject("libro");
-            
-            Object[] row = {
-                prestamo.getInt("id"),
-                libro.getString("titulo"),
-                prestamo.getString("nombreUsuario"),
-                prestamo.getString("fechaPrestamo"),
-                prestamo.has("fechaDevolucionEsperada") ? prestamo.getString("fechaDevolucionEsperada") : "",
-                prestamo.getBoolean("devuelto") ? "Sí" : "No"
-            };
-            prestamosTableModel.addRow(row);
+
+        try {
+            System.out.println("JSON recibido: " + jsonResponse); // Para depuración
+
+            JSONArray jsonArray = new JSONArray(jsonResponse);
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject prestamo = jsonArray.getJSONObject(i);
+                JSONObject libro = prestamo.getJSONObject("libro");
+
+                // Depuración detallada
+                boolean devuelto = prestamo.getBoolean("devuelto");
+                System.out.println("Préstamo ID: " + prestamo.getInt("id")
+                        + ", Devuelto JSON: " + devuelto);
+
+                Object[] row = {
+                    prestamo.getInt("id"),
+                    libro.getString("titulo"),
+                    prestamo.getString("nombreUsuario"),
+                    prestamo.getString("fechaPrestamo"),
+                    prestamo.has("fechaDevolucionEsperada") ? prestamo.getString("fechaDevolucionEsperada") : "",
+                    prestamo.getBoolean("devuelto") ? "Sí" : "No" // Esta línea es crucial
+                };
+                prestamosTableModel.addRow(row);
+            }
+        } catch (Exception e) {
+            System.err.println("Error al procesar JSON: " + e.getMessage());
+            e.printStackTrace();
+            mostrarError("Error al procesar datos: " + e.getMessage());
         }
     }
-    
+
     /**
      * Realiza un préstamo de libro
      */
     private void prestarLibro() throws Exception {
         int libroId = Integer.parseInt(libroPrestamoField.getText().trim());
         String usuario = usuarioField.getText().trim();
-        
+
         JSONObject prestamoRequest = new JSONObject();
         prestamoRequest.put("libroId", libroId);
         prestamoRequest.put("nombreUsuario", usuario);
-        
+
         sendRequest(BASE_URL_PRESTAMOS, "POST", prestamoRequest.toString());
         JOptionPane.showMessageDialog(this, "Préstamo realizado correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
     }
-    
+
     /**
      * Devuelve un libro prestado
      */
     private void devolverLibro() throws Exception {
         int prestamoId = Integer.parseInt(idPrestamoField.getText().trim());
-        sendRequest(BASE_URL_PRESTAMOS + "/devolver/" + prestamoId, "PUT", "");
+        String response = sendRequest(BASE_URL_PRESTAMOS + "/devolver/" + prestamoId, "PUT", "");
+
+        // Imprimir respuesta para depuración
+        System.out.println("Respuesta al devolver libro: " + response);
+
+        // Actualizar la UI manualmente para este préstamo
+        for (int i = 0; i < prestamosTableModel.getRowCount(); i++) {
+            if ((int) prestamosTableModel.getValueAt(i, 0) == prestamoId) {
+                prestamosTableModel.setValueAt("Sí", i, 5); // Columna "Devuelto"
+                break;
+            }
+        }
+
         JOptionPane.showMessageDialog(this, "Libro devuelto correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+
+        // Recargar todos los préstamos para actualizar la vista
+        cargarPrestamos();
     }
-    
+
     /**
      * Limpia el formulario de préstamo
      */
@@ -748,7 +789,7 @@ public class BibliotecaJFrame extends javax.swing.JFrame {
         usuarioField.setText("");
         prestamosTable.clearSelection();
     }
-    
+
     /**
      * Envía una solicitud HTTP
      */
@@ -756,7 +797,7 @@ public class BibliotecaJFrame extends javax.swing.JFrame {
         URL url = new URL(urlStr);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod(method);
-        
+
         if (jsonBody != null) {
             conn.setDoOutput(true);
             conn.setRequestProperty("Content-Type", "application/json");
@@ -765,9 +806,9 @@ public class BibliotecaJFrame extends javax.swing.JFrame {
                 os.write(input, 0, input.length);
             }
         }
-        
+
         int responseCode = conn.getResponseCode();
-        
+
         if (responseCode >= 200 && responseCode < 300) {
             try (BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), "utf-8"))) {
                 StringBuilder response = new StringBuilder();
@@ -788,7 +829,7 @@ public class BibliotecaJFrame extends javax.swing.JFrame {
             }
         }
     }
-    
+
     /**
      * Muestra un mensaje de error
      */

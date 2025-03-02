@@ -1,22 +1,33 @@
 package com.example.tarea6.models;
 
+import com.example.tarea6.config.SQLiteDateConverter;
 import jakarta.persistence.*;
 import java.time.LocalDate;
+import jakarta.persistence.Convert;
+import jakarta.persistence.Column;
 
 @Entity
 @Table(name = "prestamos")
 public class Prestamo {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    
+
     @ManyToOne
     @JoinColumn(name = "libro_id")
     private Libro libro;
-    
     private String nombreUsuario;
+    @Column(name = "fecha_prestamo")
+    @Convert(converter = SQLiteDateConverter.class)
     private LocalDate fechaPrestamo;
+
+    @Column(name = "fecha_devolucion_esperada")
+    @Convert(converter = SQLiteDateConverter.class)
     private LocalDate fechaDevolucionEsperada;
+
+    @Column(name = "fecha_devolucion_real")
+    @Convert(converter = SQLiteDateConverter.class)
     private LocalDate fechaDevolucionReal;
     private boolean devuelto;
 
